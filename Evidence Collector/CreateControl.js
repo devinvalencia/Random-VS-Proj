@@ -32,6 +32,7 @@
                         // And pass into function to create control artifacts.
                         return m2mRecord.getValue(controlRef);
                     }
+
                 }
             }
 
