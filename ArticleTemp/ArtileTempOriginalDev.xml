@@ -81,6 +81,7 @@
     }
     
     controlRefs;
+    
 </g:evaluate>
     <j:if test="${!empty(jvar_controlRefs)}">
         <h4 style="font-weight: bold">Control Objectives</h4>

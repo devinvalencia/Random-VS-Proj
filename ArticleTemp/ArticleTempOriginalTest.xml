@@ -61,6 +61,7 @@
             <li style="margin-left: 32px">${jvar_contentRef.name}</li>
         </j:forEach>
     </j:if>
+    
     <g:evaluate object="true" var="jvar_controlRefs">
     var relatedControlRefs = new GlideRecord('sn_compliance_m2m_policy_policy_statement');
     relatedControlRefs.addEncodedQuery('document='+current.sys_id);
@@ -80,6 +81,7 @@
     }
     
     controlRefs;
+    
 </g:evaluate>
     <j:if test="${!empty(jvar_controlRefs)}">
         <h4 style="font-weight: bold">Control Objectives</h4>

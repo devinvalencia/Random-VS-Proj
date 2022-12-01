@@ -61,30 +61,50 @@
             <li style="margin-left: 32px">${jvar_contentRef.name}</li>
         </j:forEach>
     </j:if>
+
     <g:evaluate object="true" var="jvar_controlRefs">
+        var relatedControlRefs = new GlideRecord('sn_compliance_m2m_policy_policy_statement');
+        relatedControlRefs.addEncodedQuery('document='+current.sys_id);
+        relatedControlRefs.query();
+        var controlRefs = [];
+    
+        while (relatedControlRefs.next()) {
+            var controlObj = new GlideRecord('sn_compliance_policy_statement');
+            controlObj.get('sys_id',relatedControlRefs.content);
+            controlRefs.push({'name':controlObj.name,'source':controlObj.source,'reference':controlObj.reference});
+        }
+        
+        controlRefs;
+</g:evaluate>
+    <j:if test="${!empty(jvar_controlRefs)}">
+        <h4 style="font-weight: bold">Control Objectives</h4>
+        <j:forEach items="${jvar_controlRefs}" var="jvar_controlRef">
+            <li style="margin-left: 32px">${jvar_controlRef.name} [${jvar_controlRef.source} ${jvar_controlRef.reference}]</li>
+        </j:forEach>
+    </j:if>
+
+    <g:evaluate object="true" var="jvar_controlContentRefs">
     var relatedControlRefs = new GlideRecord('sn_compliance_m2m_policy_policy_statement');
     relatedControlRefs.addEncodedQuery('document='+current.sys_id);
     relatedControlRefs.query();
-    var controlRefs = [];
+
 	var contentRefs = [];
     while (relatedControlRefs.next()) {
 		var contentreference = new GlideRecord('sn_grc_m2m_cont_ref_ps');
 		contentreference.addEncodedQuery('policy_statement='+relatedControlRefs.content);
 		contentreference.query();
-		while(contentreference.next())
-		{contentRefs.push(contentreference.getDisplayValue('content_reference'));}
-		
-        var controlObj = new GlideRecord('sn_compliance_policy_statement');
-        controlObj.get('sys_id',relatedControlRefs.content);
-        controlRefs.push('name':controlObj.name,'source':controlObj.source,'reference':controlObj.reference,'contentref':contentRefs);
+		while(contentreference.next()) { 
+            contentRefs.push({'name': contentreference.getDisplayValue('content_reference')});
+        }
     }
     
-    controlRefs;
+    contentRefs;
 </g:evaluate>
-    <j:if test="${!empty(jvar_controlRefs)}">
-        <h4 style="font-weight: bold">Control Objectives</h4>
-        <j:forEach items="${jvar_controlRefs}" var="jvar_controlRef">
-            <li style="margin-left: 32px">${jvar_controlRef.name} [${jvar_controlRef.source} ${jvar_controlRef.reference}]  [${jvar_controlRef.contentref}]</li>
+
+    <j:if test="${!empty(jvar_controlContentRefs)}">
+        <h4 style="font-weight: bold">Control Objective Content Refs</h4>
+        <j:forEach items="${jvar_controlContentRefs}" var="jvar_controlContentRef">
+            <li style="margin-left: 32px">${jvar_controlContentRef.name}</li>
         </j:forEach>
     </j:if>
 
