@@ -103,8 +103,12 @@
 
     <j:if test="${!empty(jvar_controlContentRefs)}">
         <h4 style="font-weight: bold">Control Objective Content Refs</h4>
-        <j:forEach items="${jvar_controlContentRefs}" var="jvar_controlContentRef">
-            <li style="margin-left: 32px">${jvar_controlContentRef.name}</li>
+
+        <j:forEach items="${jvar_controlRefs}" var="jvar_controlRef">
+            <li style="margin-left: 32px">${jvar_controlRef.name}</li>
+                <j:forEach items="${jvar_controlContentRefs}" var="jvar_controlContentRef">
+                    <li style="margin-left: 50px">${jvar_controlContentRef.name}</li>
+                </j:forEach>
         </j:forEach>
     </j:if>
 
