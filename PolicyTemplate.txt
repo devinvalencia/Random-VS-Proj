@@ -1,0 +1,15 @@
+3)  Create a Policy Template using the following fields as a Heading (highlighted bold) sections
+  - Title (includes Name of the Policy) 
+  - Description (includes the Description and Type fields in this section)
+  - Scope and Applicability (include the Entity Type + the description of the Entity Type
+  - Policy Owner (includes the Owning Group, Owner and Reviewers)
+  - Related Policies (include any related Policies and name, description, owner, state, valid to)
+
+  - References (include a list of any related Content References 
+  - Controls References (include a bullet list of all Control Objectives name, desciption, authority source, reference ID)
+
+  - Approved (include name of the last approver, date approved and comments from the approval)
+
+
+
+   document_id=8b9e235c0fe412004e938fbce1050e13^state=approved

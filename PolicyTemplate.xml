@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+
+    <h4 style="font-weight: bold;">Title:</h4>
+    <p style="margin-left: 45px">${current.name}</p>
+
+    <h4 style="font-weight: bold;">Description:</h4>
+    <p style="margin-left: 45px">${current.getDisplayValue('type')}: ${current.description}</p>
+
+    <g:evaluate object="true" var="jvar_entitytypes">
+        var relatedEntityType = new GlideRecord('sn_compliance_m2m_policy_profile_type');
+        relatedEntityType.addEncodedQuery('sn_compliance_policy='+current.sys_id);
+        relatedEntityType.query();
+        var entitytypes = [];
+
+        while (relatedEntityType.next()) {
+            var entityType = new GlideRecord('sn_grc_profile_type');
+            entityType.get('sys_id',relatedEntityType.sn_grc_profile_type);
+            entitytypes.push({'name':entityType.name,'description':entityType.description});
+        }
+        
+        entitytypes;
+	</g:evaluate>
+
+    <h4 style="font-weight: bold;">Scope and Applicability:</h4>
+    <j:forEach items="${jvar_entitytypes}" var="jvar_entitytype">
+        <ul>
+            <li style="margin-left: 32px">${jvar_entitytype.name}: ${jvar_entitytype.description}</li>
+        </ul>
+    </j:forEach>
+
+    <h4 style="font-weight: bold;">Policy Owner:</h4>
+    <ul>
+        <li style="margin-left: 32px">Owning Group: ${current.getDisplayValue('owning_group')}</li>
+        <li style="margin-left: 32px">Owner: ${current.getDisplayValue('owner')}</li>
+        <li style="margin-left: 32px">Reviewers: ${current.getDisplayValue('reviewers')}</li>
+    </ul>
+
+
+    <g:evaluate object="true" var="jvar_childpolicies">
+    var childPolicy = new GlideRecord('sn_compliance_policy');
+    childPolicy.addEncodedQuery('parent='+current.sys_id);
+    childPolicy.query();
+    var childPoliciesList = [];
+
+    while (childPolicy.next()) {
+        childPoliciesList.push({'name':childPolicy.name,'description':childPolicy.description,'owner':childPolicy.getDisplayValue('owner'),'state':childPolicy.state,'valid_to':childPolicy.valid_to});
+    }
+    
+    childPoliciesList;
+    </g:evaluate>
+
+
+    <h4 style="font-weight: bold;">Related Policies:</h4>
+    <j:forEach items="${jvar_childpolicies}" var="jvar_childpolicy">
+        <ul>
+            <li style="margin-left: 32px">${jvar_childpolicy.name}: ${jvar_childpolicy.description} - Owner: ${jvar_childpolicy.owner}, State - ${jvar_childpolicy.state}, Valid To - ${jvar_childpolicy.valid_to}</li>
+        </ul>
+    </j:forEach>
+
+    <g:evaluate object="true" var="jvar_contentRefs">
+    var relatedContentRefs = new GlideRecord('sn_grc_m2m_cont_ref_policy');
+    relatedContentRefs.addEncodedQuery('policy='+current.sys_id);
+    relatedContentRefs.query();
+    var contentRefs = [];
+
+    while (relatedContentRefs.next()) {
+        var content = new GlideRecord('sn_grc_content_reference');
+        content.get('sys_id',relatedContentRefs.content_reference);
+        contentRefs.push({'name':content.name,'description':content.description});
+    }
+    
+    contentRefs;
+</g:evaluate>
+
+    <h4 style="font-weight: bold;">Content References:</h4>
+    <j:forEach items="${jvar_contentRefs}" var="jvar_contentRef">
+        <ul>
+            <li style="margin-left: 32px">${jvar_contentRef.name}: ${jvar_contentRef.description}</li>
+        </ul>
+    </j:forEach>
+
+    <g:evaluate object="true" var="jvar_controlRefs">
+    var relatedControlRefs = new GlideRecord('sn_compliance_m2m_policy_policy_statement');
+    relatedControlRefs.addEncodedQuery('policy='+current.sys_id);
+    relatedControlRefs.query();
+    var controlRefs = [];
+
+    while (relatedControlRefs.next()) {
+        var controlObj = new GlideRecord('sn_compliance_policy_statement');
+        controlObj.get('sys_id',relatedControlRefs.content);
+        controlRefs.push({'name':controlObj.name,'description':controlObj.description,'source':controlObj.source,'reference':controlObj.reference});
+    }
+    
+    controlRefs;
+</g:evaluate>
+
+    <h4 style="font-weight: bold;">Control References:</h4>
+    <j:forEach items="${jvar_controlRefs}" var="jvar_controlRef">
+        <ul>
+            <li style="margin-left: 32px">${jvar_controlRef.name}: ${jvar_controlRef.description} Source - ${jvar_controlRef.source}, Reference ID - ${jvar_controlRef.reference}</li>
+        </ul>
+    </j:forEach>
+
+
+    <g:evaluate object="true" var="jvar_approvals">
+    var relatedApproval = new GlideRecord('sysapproval_approver');
+    relatedApproval.addEncodedQuery('document_id='+current.sys_id+'^state=approved');
+    relatedApproval.query();
+    var approvals = [];
+
+    while (relatedApproval.next()) {
+        approvals.push({'approver':relatedApproval.getDisplayValue('approver'),'sys_updated_on':relatedApproval.sys_updated_on});
+    }
+    
+    approvals;
+</g:evaluate>
+
+    <h4 style="font-weight: bold;">Approved:</h4>
+    <j:forEach items="${jvar_approvals}" var="jvar_approval">
+        <ul>
+            <li style="margin-left: 32px">${jvar_approval.approver} ${jvar_approval.sys_updated_on}</li>
+        </ul>
+    </j:forEach>
+
+</j:jelly>
